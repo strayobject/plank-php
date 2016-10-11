@@ -5,8 +5,8 @@ chdir(dirname(__DIR__));
 
 require_once 'vendor/autoload.php';
 
-use Aerys\{Host, Root, Router, Request, Response};
-use Phpkanban\Board\Controller\{AddCategoryController, ListBoardsController, ShowBoardController};
+use Aerys\{Host, Root, Router, Request, Response, function websocket};
+use Phpkanban\Board\Controller\{AddCategoryController, ListBoardsController, ShowBoardController, WsBoardController};
 use Phpkanban\App\Controller\ShowIndexController;
 use Phpkanban\Task\Controller\AddTaskController;
 /**
@@ -38,6 +38,7 @@ $router->route('GET', '/boards/?', new ShowBoardController());
 $router->route('POST', '/boards/{boardUrl}/categories', new AddCategoryController());
 $router->route('POST', '/boards/{boardUrl}/tasks', new AddTaskController());
 $router->get('v1/boards', new ListBoardsController());
+$router->route("GET", "/ws/boards/{name}", websocket(new WsBoardController()));
 // $router->get('/tasks/{id}', $task);
 // $router->get('/tasks/?', $task);
 // $router->post('/tasks', $task);

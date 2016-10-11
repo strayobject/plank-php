@@ -25,9 +25,9 @@ class ShowBoardController
 
     private function getBoardView(Board $board) : string
     {
-        $data = '<ul class="tasks">';
+        $data = '<ul class="tasks" id="categoryListWrapper">';
         foreach ($board->getTasks() as $task) {
-            $data .= '<li>'.$task->getTitle().'</li>';
+            $data .= '<li><span title="'.$task->getDescription().'">'.$task->getTitle().'</span></li>';
         }
         $data .= '</ul>';
 
@@ -57,11 +57,11 @@ class ShowBoardController
                         <input type="button" id="submitTask" value="submit"/>
                     </form>
                 </div>
-                <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-                <script src="/js/board.js"></script>
                 <script>
                     var boardUrl = "'.$board->getUrl().'"
                 </script>
+                <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+                <script src="/js/board.js"></script>
             </body>
             </html>
         ';
