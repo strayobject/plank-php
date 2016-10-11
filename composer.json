@@ -1,0 +1,10 @@
+{
+    "require": {
+        "amphp/aerys": "dev-master",
+        "ramsey/uuid": "^3",
+        "cocur/slugify": "^2"
+    },
+    "autoload": {
+        "psr-4": {"Phpkanban\\": "src/Kanban/"}
+    }
+}
