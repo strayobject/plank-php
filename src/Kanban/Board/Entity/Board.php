@@ -6,52 +6,50 @@ namespace Plank\Kanban\Board\Entity;
 class Board implements \JsonSerializable
 {
     private $id;
-    private $url;
+    private $ownerId;
+    private $participants;
     private $name;
     private $description;
-    private $categories;
-    private $tasks;
+    private $columns;
 
-    public function __construct(string $name, string $description)
+    public function __construct(string $id, string $ownerId, string $name, string $description)
     {
-        $this->id = Uuid::uuid4()->serialize();
-        $this->url = (new Slugify())->slugify($name);
+        $this->id = $id;
+        $this->ownerId = $ownerId;
         $this->name = $name;
         $this->description = $description;
-        $this->categories = [];
-        $this->tasks = [];
     }
 
-    public function jsonSerialize() : array
+    public function jsonSerialize(): array
     {
         return [
             'id' => $this->id,
-            'url' => $this->url,
+            'ownerId' => $this->ownerId,
             'name' => $this->name,
             'description' => $this->description,
-            'categories' => $this->categories,
-            'tasks' => $this->tasks,
+            'columns' => $this->columns,
         ];
     }
 
-    public function addTask(Task $task) : void
+    public function addParticipant(string $participant): Board
     {
-        $this->tasks[$task->getId()] = $task;
+        $this->participants[$participant] = $participant;
+
+        return $this;
     }
 
-    public function removeTask($task) :void
+    public function addColumn(Column $column): Board
     {
-        unset($this->tasks[$task->getId()]);
+        $this->categories[$column->getId()] = $column;
+
+        return $this;
     }
 
-    public function addCategory($category) : void
+    public function removeColumn($column): Board
     {
-        $this->categories[$category] = $category;
-    }
+        unset($this->columns[$column]);
 
-    public function removeCategory($category) :void
-    {
-        unset($this->categories[$category]);
+        return $this;
     }
 
     /**
@@ -59,19 +57,9 @@ class Board implements \JsonSerializable
      *
      * @return mixed
      */
-    public function getId() : string
+    public function getId(): string
     {
         return $this->id;
-    }
-
-    /**
-     * Gets the value of url.
-     *
-     * @return mixed
-     */
-    public function getUrl() : string
-    {
-        return $this->url;
     }
 
     /**
@@ -79,7 +67,7 @@ class Board implements \JsonSerializable
      *
      * @return mixed
      */
-    public function getName() : string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -91,7 +79,7 @@ class Board implements \JsonSerializable
      *
      * @return self
      */
-    public function setName(string $name) : Board
+    public function setName(string $name): Board
     {
         $this->name = $name;
 
@@ -103,7 +91,7 @@ class Board implements \JsonSerializable
      *
      * @return mixed
      */
-    public function getDescription() : string
+    public function getDescription(): string
     {
         return $this->description;
     }
@@ -115,7 +103,7 @@ class Board implements \JsonSerializable
      *
      * @return self
      */
-    public function setDescription($description) : Board
+    public function setDescription($description): Board
     {
         $this->description = $description;
 
@@ -127,18 +115,18 @@ class Board implements \JsonSerializable
      *
      * @return mixed
      */
-    public function getCategories() : array
+    public function getColumns(): array
     {
-        return $this->categories;
+        return $this->columns;
     }
 
     /**
-     * Gets the value of tasks.
+     * Gets the value of participants.
      *
      * @return mixed
      */
-    public function getTasks() : array
+    public function getParticipants(): array
     {
-        return $this->tasks;
+        return $this->participants;
     }
 }
