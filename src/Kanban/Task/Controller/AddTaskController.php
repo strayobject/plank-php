@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Phpkanban\Task\Controller;
+namespace Plank\Kanban\Task\Controller;
 
 use Aerys\{Request, Response, function parseBody};
-use Phpkanban\Task\Entity\Task;
-use Phpkanban\Board\Entity\BoardStore;
+use Plank\Kanban\Task\Entity\Task;
+use Plank\Kanban\Board\Entity\BoardStore;
 
 class AddTaskController
 {

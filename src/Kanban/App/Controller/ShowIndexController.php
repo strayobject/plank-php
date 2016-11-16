@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Phpkanban\App\Controller;
+namespace Plank\Kanban\App\Controller;
 
 use Aerys\{Request, Response};
 

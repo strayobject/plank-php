@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Phpkanban\Task\Entity;
+namespace Plank\Kanban\Task\Entity;
 
 use Ramsey\Uuid\Uuid;
 

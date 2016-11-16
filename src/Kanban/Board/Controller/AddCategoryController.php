@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Phpkanban\Board\Controller;
+namespace Plank\Kanban\Board\Controller;
 
 use Aerys\{Request, Response};
-use Phpkanban\Board\Entity\{Board, BoardStore};
+use Plank\Kanban\Board\Entity\{Board, BoardRepository};
 
 class AddCategoryController
 {

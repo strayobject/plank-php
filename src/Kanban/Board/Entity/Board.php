@@ -1,11 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Phpkanban\Board\Entity;
-
-use Ramsey\Uuid\Uuid;
-use Cocur\Slugify\Slugify;
-use Phpkanban\Task\Entity\Task;
+namespace Plank\Kanban\Board\Entity;
 
 class Board implements \JsonSerializable
 {

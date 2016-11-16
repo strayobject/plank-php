@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Phpkanban\Board\Controller;
+namespace Plank\Kanban\Board\Controller;
 
 use Aerys\{Request, Response, Websocket};
-use Phpkanban\Board\Entity\BoardStore;
-use Phpkanban\Task\Entity\Task;
+use Plank\Kanban\Board\Entity\BoardStore;
+use Plank\Kanban\Task\Entity\Task;
 
 class WsBoardController implements Websocket
 {
