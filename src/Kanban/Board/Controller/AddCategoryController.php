@@ -8,28 +8,24 @@ use Plank\Kanban\Board\Entity\{Board, BoardRepository};
 
 class AddCategoryController
 {
-    private $boardStore;
+    private $boardRepo;
 
-    public function __construct()
+    public function __construct(BoardRepository $boardRepo)
     {
-        $this->boardStore = new BoardStore();
+        $this->boardRepo = $boardRepo;
     }
 
-    public function __invoke(Request $request, Response $response, array $args) : void
+    public function __invoke(Request $request, Response $response, array $args): void
     {
-        $boardUrl = $args['boardUrl'];
-        $category = $request->getParam('category');
-        $this->addCategory($boardUrl, $category);
+        // $boardUrl = $args['boardUrl'];
+        // $category = $request->getParam('category');
+        // $this->addCategory($boardUrl, $category);
         $response->setStatus(204);
         $response->end(null);
     }
 
-    private function addCategory(string $boardUrl, string $category) : void
+    private function addCategory(): void
     {
-        $this
-            ->boardStore
-            ->getBoard($boardUrl)
-            ->addCategory($board)
-        ;
+
     }
 }

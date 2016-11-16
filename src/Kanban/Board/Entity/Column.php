@@ -5,9 +5,9 @@ namespace Plank\Kanban\Board\Entity;
 
 class Column implements \JsonSerializable
 {
-    private $id;
-    private $name;
-    private $order;
+    private $id = '';
+    private $name = '';
+    private $order = 0;
 
     public function __construct(string $id, string $name, int $order)
     {

@@ -19,12 +19,8 @@ class BoardHydrator
     private function singleBoardConverter($data): Board
     {
         $board = new Board($data['id'], $data['ownerId'], $data['name'], $data['description']);
+        $board->setColumns((new ColumnHydrator())->convert($data['columns']));
 
-        foreach ($data['columns'] as $column) {
-            /**
-             * @todo add columns here
-             */
-        }
         return $board;
     }
 

@@ -10,6 +10,7 @@ use Plank\Kanban\Board\Controller\{AddCategoryController, ListBoardsController, 
 use Plank\Kanban\App\Controller\ShowIndexController;
 use Plank\Kanban\Task\Controller\AddTaskController;
 use Plank\Kanban\Board\Entity\BoardRepository;
+use League\Fractal\{Manager, Serializer\DataArraySerializer};
 /**
  * Env
  */
@@ -27,23 +28,17 @@ const AERYS_OPTIONS = [
 $dbConn = r\connect('rdb', 28015);
 $dbConn->useDb('plank');
 
+$outputManager = new Manager();
+$outputManager->setSerializer(new DataArraySerializer());
+
 $boardRepo = new BoardRepository($dbConn);
 
-$task = function(Request $request, Response $response, array $args) {
-    $response->end(sprintf('This is your task id: %s', $args['id']));
-};
-
-// You can add routes in two ways:
-// using route($method, $path, $callable)
-// using method functions e.g. get($path, $callable)
 $router = new Router();
-$router->route('GET', '/', new ShowIndexController($boardRepo));
-$router->route('GET', '/boards/{name}', new ShowBoardController());
-$router->route('GET', '/boards/?', new ShowBoardController());
-$router->route('POST', '/boards/{boardUrl}/categories', new AddCategoryController());
-$router->route('POST', '/boards/{boardUrl}/tasks', new AddTaskController());
-$router->get('v1/boards', new ListBoardsController());
-$router->route("GET", "/ws/boards/{name}", websocket(new WsBoardController()));
+$router->route('GET', '/', new ShowIndexController($boardRepo, $outputManager));
+$router->route('GET', '/b/{id}/?', new ShowBoardController($boardRepo, $outputManager));
+$router->route('POST', '/b/{id}/categories', new AddCategoryController());
+$router->route('POST', '/b/{id}/tasks', new AddTaskController());
+$router->route('GET', '/ws/b/{id}', websocket(new WsBoardController()));
 // $router->get('/tasks/{id}', $task);
 // $router->get('/tasks/?', $task);
 // $router->post('/tasks', $task);
@@ -57,11 +52,3 @@ $host
     ->use($router)
     ->use($rootDir)
 ;
-
-// $devhost
-//     ->name('localhost')
-//     //->expose('*', 8899)
-//     ->expose('*', 7001)
-//     ->use($router)
-//     ->use($rootDir)
-// ;

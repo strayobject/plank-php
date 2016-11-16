@@ -5,12 +5,12 @@ namespace Plank\Kanban\Board\Entity;
 
 class Board implements \JsonSerializable
 {
-    private $id;
-    private $ownerId;
-    private $participants;
-    private $name;
-    private $description;
-    private $columns;
+    private $id = '';
+    private $ownerId = '';
+    private $participants = [];
+    private $name = '';
+    private $description = '';
+    private $columns = [];
 
     public function __construct(string $id, string $ownerId, string $name, string $description)
     {
@@ -128,5 +128,29 @@ class Board implements \JsonSerializable
     public function getParticipants(): array
     {
         return $this->participants;
+    }
+
+    /**
+     * Gets the value of ownerId.
+     *
+     * @return mixed
+     */
+    public function getOwnerId(): string
+    {
+        return $this->ownerId;
+    }
+
+    /**
+     * Sets the value of columns.
+     *
+     * @param mixed $columns the columns
+     *
+     * @return self
+     */
+    public function setColumns($columns): Board
+    {
+        $this->columns = $columns;
+
+        return $this;
     }
 }

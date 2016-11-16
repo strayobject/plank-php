@@ -8,20 +8,20 @@ use Plank\Kanban\Board\Entity\{Board, BoardRepository};
 
 class ListBoardsController
 {
-    private $boardStore;
+    private $boardRepo;
 
-    public function __construct()
+    public function __construct(BoardRepository $boardRepo)
     {
-        $this->boardStore = new BoardStore();
+        $this->boardRepo = $boardRepo;
     }
 
-    public function __invoke(Request $request, Response $response, array $args) : void
+    public function __invoke(Request $request, Response $response, array $args): void
     {
-        $response->end(json_encode($this->boardStore));
+        
     }
 
-    private function addBoard(Board $board) : void
+    private function addBoard(Board $board): void
     {
-        $this->boardStore->addBoard($board);
+
     }
 }
