@@ -12,7 +12,7 @@ class BoardHydrator
         } elseif ($data instanceof \r\Cursor) {
             return $this->multiBoardConverter($data);
         } else {
-            throw new \InvalidArgumentException('No handler for: '.get_class($data));
+            throw new \InvalidArgumentException('No handler for: '.(is_object($data) ? get_class($data): gettype($data)));
         }
     }
 
