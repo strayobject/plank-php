@@ -19,6 +19,7 @@ class BoardTransformer extends TransformerAbstract
             'ownerId' => $board->getOwnerId(),
             'name' => $board->getName(),
             'description' => $board->getDescription(),
+            'participants' => $board->getParticipants(),
         ];
     }
 

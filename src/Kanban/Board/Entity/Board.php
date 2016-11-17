@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Plank\Kanban\Board\Entity;
 
-class Board implements \JsonSerializable
+class Board
 {
     private $id = '';
     private $ownerId = '';
@@ -12,23 +12,20 @@ class Board implements \JsonSerializable
     private $description = '';
     private $columns = [];
 
-    public function __construct(string $id, string $ownerId, string $name, string $description)
-    {
+    public function __construct(
+        string $id,
+        string $ownerId,
+        string $name,
+        string $description,
+        array $participants,
+        array $columns
+    ) {
         $this->id = $id;
         $this->ownerId = $ownerId;
         $this->name = $name;
         $this->description = $description;
-    }
-
-    public function jsonSerialize(): array
-    {
-        return [
-            'id' => $this->id,
-            'ownerId' => $this->ownerId,
-            'name' => $this->name,
-            'description' => $this->description,
-            'columns' => $this->columns,
-        ];
+        $this->participants = $participants;
+        $this->setColumns($columns);
     }
 
     public function addParticipant(string $participant): Board
@@ -140,17 +137,14 @@ class Board implements \JsonSerializable
         return $this->ownerId;
     }
 
-    /**
-     * Sets the value of columns.
-     *
-     * @param mixed $columns the columns
-     *
-     * @return self
-     */
-    public function setColumns($columns): Board
+    private function setColumns(array $columns)
     {
-        $this->columns = $columns;
+        foreach ($columns as $column) {
+            if (!($column instanceof Column)) {
+                throw new \InvalidArgumentException('Only objects of type "Column" are allowed');
+            }
+        }
 
-        return $this;
+        $this->columns = $columns;
     }
 }
