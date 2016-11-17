@@ -6,7 +6,7 @@ chdir(dirname(__DIR__));
 require_once 'vendor/autoload.php';
 
 use Aerys\{Host, Root, Router, Request, Response, function websocket};
-use Plank\Kanban\Board\Controller\{AddCategoryController, ListBoardsController, ShowBoardController, WsBoardController};
+use Plank\Kanban\Board\Controller\{AddColumnController, ListBoardsController, ShowBoardController, WsBoardController};
 use Plank\Kanban\App\Controller\ShowIndexController;
 use Plank\Kanban\Task\Controller\AddTaskController;
 use Plank\Kanban\Board\Entity\BoardRepository;
@@ -35,8 +35,9 @@ $boardRepo = new BoardRepository($dbConn);
 
 $router = new Router();
 $router->route('GET', '/', new ShowIndexController($boardRepo, $outputManager));
+$router->route('GET', '/b/?', new ListBoardsController($boardRepo, $outputManager));
 $router->route('GET', '/b/{id}/?', new ShowBoardController($boardRepo, $outputManager));
-$router->route('POST', '/b/{id}/categories', new AddCategoryController($boardRepo, $outputManager));
+$router->route('POST', '/b/{id}/categories', new AddColumnController($boardRepo, $outputManager));
 $router->route('POST', '/b/{id}/tasks', new AddTaskController($boardRepo, $outputManager));
 $router->route('GET', '/ws/b/{id}', websocket(new WsBoardController($boardRepo, $outputManager)));
 // $router->get('/tasks/{id}', $task);
