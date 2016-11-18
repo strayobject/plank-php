@@ -5,12 +5,12 @@ namespace Plank\Kanban\Board\Entity;
 
 class ColumnHydrator
 {
-    public function convert($data)
+    public function hydrate($data)
     {
         if ($data instanceof \ArrayObject) {
-            return $this->singleItemConverter($data);
+            return $this->singleItemHydrate($data);
         } elseif (is_array($data) || $data instanceof \r\Cursor) {
-            return $this->multiItemConverter($data);
+            return $this->multiItemHydrate($data);
         } else {
             throw new \InvalidArgumentException('No handler for: '.(is_object($data) ? get_class($data): gettype($data)));
         }
@@ -20,19 +20,19 @@ class ColumnHydrator
      * @param  [type] $data [description]
      * @return [type]       [description]
      */
-    private function singleItemConverter($data): Column
+    private function singleItemHydrate($data): Column
     {
         $item = new Column($data['id'], $data['name'], (int) $data['order']);
 
         return $item;
     }
 
-    private function multiItemConverter($data): array
+    private function multiItemHydrate($data): array
     {
         $ret = [];
 
         foreach ($data as $item) {
-            $ret[] = $this->singleItemConverter($item);
+            $ret[] = $this->singleItemHydrate($item);
         }
 
         return $ret;

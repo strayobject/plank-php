@@ -5,20 +5,20 @@ namespace Plank\Kanban\Board\Entity;
 
 class BoardHydrator
 {
-    public function convert($data)
+    public function hydrate($data)
     {
         if ($data instanceof \ArrayObject) {
-            return $this->singleBoardConverter($data);
+            return $this->singleItemHydrate($data);
         } elseif ($data instanceof \r\Cursor) {
-            return $this->multiBoardConverter($data);
+            return $this->multiItemHydrate($data);
         } else {
             throw new \InvalidArgumentException('No handler for: '.(is_object($data) ? get_class($data): gettype($data)));
         }
     }
 
-    private function singleBoardConverter($data): Board
+    private function singleItemHydrate($data): Board
     {
-        $columns = (new ColumnHydrator())->convert($data['columns']);
+        $columns = (new ColumnHydrator())->hydrate($data['columns']);
         $board = new Board(
             $data['id'],
             $data['ownerId'],
@@ -31,12 +31,12 @@ class BoardHydrator
         return $board;
     }
 
-    private function multiBoardConverter(\r\Cursor $data): array
+    private function multiItemHydrate(\r\Cursor $data): array
     {
         $ret = [];
 
         foreach ($data as $item) {
-            $ret[] = $this->singleBoardConverter($item);
+            $ret[] = $this->singleItemHydrate($item);
         }
 
         return $ret;

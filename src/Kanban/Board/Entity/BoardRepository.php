@@ -24,7 +24,7 @@ class BoardRepository
          */
         $data = table(self::TABLE_NAME)->run($this->conn);
 
-        return $this->hydrator->convert($data);
+        return $this->hydrator->hydrate($data);
     }
 
     public function save(Board $board): Board
@@ -50,6 +50,6 @@ class BoardRepository
             throw new ItemNotFoundException('Board not found.');
         }
 
-        return $this->hydrator->convert($data);
+        return $this->hydrator->hydrate($data);
     }
 }
