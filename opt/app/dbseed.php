@@ -33,6 +33,7 @@ $users = [
         'lastName' => 'Zee',
         'alias' => 'Strayobject',
         'email' => 'code@strayobject.co.uk',
+        'password' => '',
     ],
     [
         'id' => $userIds[1],
@@ -40,6 +41,7 @@ $users = [
         'lastName' => 'Zee',
         'alias' => 'Strayobject',
         'email' => 'code@strayobject.co.uk',
+        'password' => '',
     ],
     [
         'id' => $userIds[2],
@@ -47,6 +49,7 @@ $users = [
         'lastName' => 'Zee',
         'alias' => 'Strayobject',
         'email' => 'code@strayobject.co.uk',
+        'password' => '',
     ],
 ];
 
@@ -133,3 +136,7 @@ r\table('users')->insert($users)->run($conn);
 r\table('boards')->insert($boards)->run($conn);
 r\table('tasks')->insert($tasks)->run($conn);
 r\table('tags')->insert($tags)->run($conn);
+
+r\table('boards')->indexCreate('ownerId')->run($conn);
+r\table('tasks')->indexCreate('boardId')->run($conn);
+r\table('tasks')->indexCreate('columnId')->run($conn);
