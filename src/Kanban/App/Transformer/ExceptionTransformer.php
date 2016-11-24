@@ -7,7 +7,7 @@ use League\Fractal\{TransformerAbstract, Resource\Collection};
 
 class ExceptionTransformer extends TransformerAbstract
 {
-    public function transform(\Exception $e): array
+    public function transform(\Throwable $e): array
     {
         return [
             'message' => $e->getMessage(),
