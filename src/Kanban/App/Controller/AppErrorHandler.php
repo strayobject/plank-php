@@ -4,40 +4,38 @@ declare(strict_types=1);
 namespace Plank\Kanban\App\Controller;
 
 use Aerys\{Request, Response};
-use League\Fractal\{Manager, Resource\Item};
-use Plank\Kanban\Task\Entity\TaskRepository;
-use Plank\Kanban\Task\Transformer\TaskTransformer;
-use Plank\Kanban\App\Exception\{ItemNotFoundException};
-use Plank\Kanban\App\Transformer\{ExceptionTransformer};
+use League\Fractal\{Resource\Item};
+use Plank\Kanban\App\{Responder\ResponderInterface, Transformer\ExceptionTransformer};
 
 class AppErrorHandler
 {
     /**
-     * @var \Callable
+     * @var ResponderInterface
      */
     private $responder;
     /**
-     * @var Manager
+     * @var \Callable
      */
-    private $outputManager;
+    private $controller;
 
-    public function __construct(Manager $outputManager, Callable $responder)
+    public function __construct(Callable $controller, ResponderInterface $responder)
     {
-        $this->outputManager = $outputManager;
+        $this->controller = $controller;
         $this->responder = $responder;
     }
-    public function __invoke(Request $request, Response $response, array $args)
+    public function __invoke(Request $request, Response $response, array $args): void
     {
         try {
-            $f = $this->responder;
+            $f = $this->controller;
             $f($request, $response, $args);
+        }  catch (\Exception $e) {
+            $resource = new Item($e, new ExceptionTransformer(), 'exception');
+            $response->setStatus(400);
+            $this->responder->createAndFinish($response, $resource);
         } catch (\Throwable $e) {
             $resource = new Item($e, new ExceptionTransformer(), 'exception');
             $response->setStatus(500);
+            $this->responder->createAndFinish($response, $resource);
         }
-
-        $data = $this->outputManager->createData($resource)->toJson();
-        $response->addHeader('Content-Type', 'application/json');
-        $response->end($data);
     }
 }
