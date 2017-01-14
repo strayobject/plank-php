@@ -14,12 +14,6 @@ class BasicAuth implements Middleware
 {
     private $userProvider;
 
-    /**
-     * @todo pass value into constructor
-     * @var integer
-     */
-    private $cost = 13;
-
     public function __construct(UserProviderInterface $userProvider)
     {
         $this->userProvider = $userProvider;
@@ -29,7 +23,8 @@ class BasicAuth implements Middleware
     {
         try {
             $auth = $this->parseRequest($ireq);
-            $user = $this->userProvider->fetchUserByAuth($auth['email'], $auth['password']);
+            $user = $this->userProvider->fetchUserForAuth($auth['email']);
+            $this->validatePassword($user, $auth['password']);
             $ireq->locals['user'] = $user;
         } catch (\Exception $e) {
             $ireq->locals['authResponse'] = $e->getMessage();
@@ -47,6 +42,15 @@ class BasicAuth implements Middleware
         $res->setStatus(401);
         $res->setHeader('www-authenticate', 'Basic realm="PlankApi"');
         $res->end('We will have json response here. '.$req->getLocalVar('authResponse'));
+    }
+
+    private function validatePassword($user, $password)
+    {
+        if (password_verify($password, $user->getPassword())) {
+            return $user;
+        }
+
+        throw new ItemNotFoundException('Invalid credentials.');
     }
 
     /**
@@ -68,7 +72,7 @@ class BasicAuth implements Middleware
 
         return [
             'email' => $email,
-            'password' => password_hash($password, PASSWORD_BCRYPT, ['cost' => $this->cost]),
+            'password' => $password,
         ];
     }
 }
