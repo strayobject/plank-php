@@ -7,7 +7,7 @@ use Aerys\{Request, Response};
 use League\Fractal\{Resource\Item};
 use Plank\Kanban\App\{Responder\ResponderInterface, Transformer\ExceptionTransformer};
 
-class AppErrorHandler
+class ResponseHandler
 {
     /**
      * @var ResponderInterface
@@ -23,19 +23,28 @@ class AppErrorHandler
         $this->controller = $controller;
         $this->responder = $responder;
     }
-    public function __invoke(Request $request, Response $response, array $args): void
+    public function __invoke(Request $request, Response $response, array $args)
     {
         try {
             $f = $this->controller;
-            $f($request, $response, $args);
+            $resource = $f($request, $response, $args);
+            /**
+             * Every controller returns a resource. However, some controllers
+             * are using "yield" and return an instance of Generator
+             * that we must yield a resource from.
+             */
+            if ($resource instanceof \Generator) {
+                $resource = yield from $resource;
+            }
+            $this->responder->createData($resource)->jsonFinish($response);
         }  catch (\Exception $e) {
             $resource = new Item($e, new ExceptionTransformer(), 'exception');
             $response->setStatus(400);
-            $this->responder->createAndFinish($response, $resource);
+            $this->responder->createData($resource)->jsonFinish($response);
         } catch (\Throwable $e) {
             $resource = new Item($e, new ExceptionTransformer(), 'exception');
             $response->setStatus(500);
-            $this->responder->createAndFinish($response, $resource);
+            $this->responder->createData($resource)->jsonFinish($response);
         }
     }
 }
