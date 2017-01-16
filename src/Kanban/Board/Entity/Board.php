@@ -5,11 +5,29 @@ namespace Plank\Kanban\Board\Entity;
 
 class Board
 {
+    /**
+     * @var string
+     */
     private $id = '';
+    /**
+     * @var string
+     */
     private $ownerId = '';
+    /**
+     * @var string
+     */
     private $participants = [];
+    /**
+     * @var string
+     */
     private $name = '';
+    /**
+     * @var string
+     */
     private $description = '';
+    /**
+     * @var string
+     */
     private $columns = [];
 
     public function __construct(
@@ -137,7 +155,7 @@ class Board
         return $this->ownerId;
     }
 
-    private function setColumns(array $columns)
+    private function setColumns(array $columns): void
     {
         foreach ($columns as $column) {
             if (!($column instanceof Column)) {

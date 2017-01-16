@@ -7,10 +7,10 @@ use Aerys\{Request, Response};
 
 class ShowIndexController
 {
-    public function __construct($boardRepo, $outputManager)
+    public function __construct($boardRepo, $responder)
     {
         $this->boardRepo = $boardRepo;
-        $this->outputManager = $outputManager;
+        $this->responder = $responder;
     }
 
     public function __invoke(Request $request, Response $response, array $args) : void

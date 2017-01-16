@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Plank\Kanban\Board\Entity;
 
-class Column implements \JsonSerializable
+class Column
 {
     private $id = '';
     private $name = '';
@@ -14,15 +14,6 @@ class Column implements \JsonSerializable
         $this->id = $id;
         $this->name = $name;
         $this->order = $order;
-    }
-
-    public function jsonSerialize(): array
-    {
-        return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'order' => $this->order,
-        ];
     }
 
     /**

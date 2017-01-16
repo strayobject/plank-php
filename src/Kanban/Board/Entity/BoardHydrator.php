@@ -3,11 +3,24 @@ declare(strict_types=1);
 
 namespace Plank\Kanban\Board\Entity;
 
+use Ramsey\Uuid\UuidFactoryInterface;
+
 class BoardHydrator
 {
+    private $idGen;
+    private $columnHydrator;
+
+    public function __construct(
+        UuidFactoryInterface $idGen,
+        ColumnHydrator $columnHydrator
+    ) {
+        $this->idGen = $idGen;
+        $this->columnHydrator = $columnHydrator;
+    }
+
     public function hydrate($data)
     {
-        if ($data instanceof \ArrayObject) {
+        if (is_array($data) || $data instanceof \ArrayObject) {
             return $this->singleItemHydrate($data);
         } elseif ($data instanceof \r\Cursor) {
             return $this->multiItemHydrate($data);
@@ -18,14 +31,14 @@ class BoardHydrator
 
     private function singleItemHydrate($data): Board
     {
-        $columns = (new ColumnHydrator())->hydrate($data['columns']);
+        $columns = $this->columnHydrator->hydrate($data['columns']);
         $board = new Board(
-            $data['id'],
+            empty($data['id']) ? $this->idGen->uuid4()->toString() : $data['id'],
             $data['ownerId'],
             $data['name'],
             $data['description'],
-            $data['participants'],
-            $columns
+            empty($data['participants']) ? [$data['ownerId']] : $data['participants'],
+            is_array($columns) ? $columns : [$columns]
         );
 
         return $board;
