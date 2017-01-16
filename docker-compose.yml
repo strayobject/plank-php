@@ -18,4 +18,4 @@ services:
     rethinkdb:
         image: rethinkdb:2.3.5
         ports:
-          - 8080:8080
+          - 8989:8080
