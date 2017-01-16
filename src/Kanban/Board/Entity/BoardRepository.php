@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace Plank\Kanban\Board\Entity;
 
-use r\{function table};
+use r\{Connection, function table};
+use r\Exceptions\RqlDriverError;
 use Plank\Kanban\App\Exception\ItemNotFoundException;
 
 class BoardRepository
@@ -11,27 +12,32 @@ class BoardRepository
     const TABLE_NAME = 'boards';
     private $conn;
 
-    public function __construct($dbConn)
+    public function __construct(Connection $dbConn, BoardHydrator $hydrator)
     {
         $this->conn = $dbConn;
-        $this->hydrator = new BoardHydrator();
+        $this->hydrator = $hydrator;
     }
 
-    public function getBoards()
+    public function getBoards(string $userId): array
     {
         /**
          * @todo move rethink calls to a provider or catch driver exceptions
          */
-        $data = table(self::TABLE_NAME)->run($this->conn);
+        $data = table(self::TABLE_NAME)->filter(['ownerId' => $userId])->run($this->conn);
 
         return $this->hydrator->hydrate($data);
     }
 
-    public function save(Board $board): Board
+    /**
+     * @todo check if returned data [errors => 1] and log response if so
+     * @param  array  $data
+     * @return \ArrayObject
+     */
+    public function persist(array $data): \ArrayObject
     {
-
-        return $board;
+        return table(self::TABLE_NAME)->insert($data)->run($this->conn);
     }
+
     /**
      * Fetches a single board
      *
@@ -39,17 +45,25 @@ class BoardRepository
      * @throws ItemNotFoundException
      * @return Board
      */
-    public function getBoard(string $id): Board
+    public function getBoard(string $id, string $userId): Board
     {
         /**
          * @todo move rethink calls to a provider or catch driver exceptions
          */
-        $data = table(self::TABLE_NAME)->get($id)->run($this->conn);
+        try {
+            $data = table(self::TABLE_NAME)->getAll($id)->filter(['ownerId' => $userId])->run($this->conn);
 
-        if (is_null($data)) {
-            throw new ItemNotFoundException('Board not found.');
+            if (is_null($data) || is_null($data->current())) {
+                throw new ItemNotFoundException('Board not found.');
+            }
+        } catch (RqlDriverError $e) {
+            if (strpos($e->getMessage(), 'No more data available') === 0) {
+                throw new ItemNotFoundException('Board not found.');
+            }
+
+            throw $e;
         }
 
-        return $this->hydrator->hydrate($data);
+        return $this->hydrator->hydrate($data)[0];
     }
 }
