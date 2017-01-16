@@ -35,13 +35,11 @@ class BasicAuth implements Middleware
 
     public function __invoke(Request $req, Response $res): void
     {
-        if (empty($req->getLocalVar('authResponse'))) {
-            return;
+        if (!empty($req->getLocalVar('authResponse'))) {
+            $res->setStatus(401);
+            $res->setHeader('www-authenticate', 'Basic realm="PlankApi"');
+            $res->end('TODO: Make this a json response. '.$req->getLocalVar('authResponse'));
         }
-
-        $res->setStatus(401);
-        $res->setHeader('www-authenticate', 'Basic realm="PlankApi"');
-        $res->end('We will have json response here. '.$req->getLocalVar('authResponse'));
     }
 
     private function validatePassword($user, $password)
