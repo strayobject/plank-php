@@ -7,7 +7,7 @@ class UserHydrator
 {
     public function hydrate($data)
     {
-        if ($data instanceof \ArrayObject) {
+        if (is_array($data) || $data instanceof \ArrayObject) {
             return $this->singleItemHydrate($data);
         } elseif ($data instanceof \r\Cursor) {
             return $this->multiItemHydrate($data);
@@ -18,15 +18,16 @@ class UserHydrator
 
     private function singleItemHydrate($data): User
     {
-        $board = new User(
+        $item = new User(
             $data['id'],
             $data['firstName'],
             $data['lastName'],
             $data['alias'],
-            $data['email']
+            $data['email'],
+            $data['password']
         );
 
-        return $board;
+        return $item;
     }
 
     private function multiItemHydrate(\r\Cursor $data): array

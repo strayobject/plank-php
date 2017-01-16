@@ -25,19 +25,25 @@ class User
      * @var string
      */
     private $email = '';
+    /**
+     * @var string
+     */
+    private $password = '';
 
     public function __construct(
         string $id,
         string $firstName,
         string $lastName,
         string $alias,
-        string $email
+        string $email,
+        string $password
     ) {
         $this->id = $id;
         $this->firstName = $firstName;
         $this->lastName = $lastName;
         $this->alias = $alias;
         $this->email = $email;
+        $this->password = $password;
     }
 
     /**
@@ -130,5 +136,29 @@ class User
     public function getEmail()
     {
         return $this->email;
+    }
+
+    /**
+     * Gets the value of password.
+     *
+     * @return string
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    /**
+     * Sets the value of password.
+     *
+     * @param string $password the password
+     *
+     * @return self
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+
+        return $this;
     }
 }
