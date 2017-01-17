@@ -29,8 +29,12 @@ class BoardHydrator
         }
     }
 
-    private function singleItemHydrate($data): Board
+    public function singleItemHydrate($data): Board
     {
+        if (!is_array($data) && !($data instanceof \ArrayObject)) {
+            throw new \InvalidArgumentException('Item hydrator can handle array like data.');
+        }
+
         $columns = $this->columnHydrator->hydrate($data['columns']);
         $board = new Board(
             empty($data['id']) ? $this->idGen->uuid4()->toString() : $data['id'],
@@ -44,7 +48,7 @@ class BoardHydrator
         return $board;
     }
 
-    private function multiItemHydrate(\r\Cursor $data): array
+    public function multiItemHydrate(\r\Cursor $data): array
     {
         $ret = [];
 
