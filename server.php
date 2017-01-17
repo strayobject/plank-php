@@ -17,14 +17,13 @@ use Plank\Kanban\Task\Controller\{AddTaskController, ListTasksController, GetTas
 use Plank\Shared\User\Controller\{AddUserController, GetUserController, LoginController, LogoutController};
 
 use Plank\Kanban\Board\Entity\{BoardHydrator, BoardRepository, ColumnHydrator};
+use Plank\Kanban\Board\Parser\BoardDataParser;
 use Plank\Kanban\Task\Entity\{TaskHydrator, TaskRepository};
 use Plank\Shared\User\Entity\{UserHydrator, UserRepository};
 use Plank\Shared\User\Provider\LocalUserProvider;
 
-
 use League\Fractal\{Manager, Serializer\DataArraySerializer};
 use Ramsey\Uuid\UuidFactory;
-
 
 /**
  * Env
@@ -58,6 +57,8 @@ $boardRepo = new BoardRepository($dbConn, $boardHydrator);
 $taskRepo = new TaskRepository($dbConn, $taskHydrator);
 $userRepo = new UserRepository($dbConn, $userHydrator);
 
+$boardDataParser = new BoardDataParser($boardHydrator, $responder);
+
 $localUserProvider = new LocalUserProvider($userRepo);
 $basicAuthMiddleware = new BasicAuth($localUserProvider);
 
@@ -65,7 +66,7 @@ $router = new Router();
 $router->route('GET', '/', new ShowIndexController($boardRepo, $responder));
 
 $router->route('GET', '/b', new ResponseHandler(new ListBoardsController($boardRepo), $responder));
-$router->route('POST', '/b', new ResponseHandler(new AddBoardController($boardRepo, $boardHydrator, $responder), $responder));
+$router->route('POST', '/b', new ResponseHandler(new AddBoardController($boardRepo, $boardDataParser), $responder));
 $router->route('GET', '/b/{bid}', new ResponseHandler(new GetBoardController($boardRepo), $responder));
 
 $router->route('GET', '/b/{bid}/columns', new ResponseHandler(new ListBoardColumnsController($boardRepo, $responder), $responder));
